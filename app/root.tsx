@@ -35,10 +35,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <section
-          id="dashboard"
-          className="sm: grid-rows-[60px 1fr] sm:grid-cols-[80px] 1fr"
-        >
+        <section className="sm: grid-rows-[60px 1fr] sm:grid-cols-[80px] 1fr">
           <nav></nav>
           <header></header>
           <main>
