@@ -48,14 +48,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function LoginPage() {
   return (
-    <ValidatedForm validator={validator} method="post">
-      <Input type="email" name="email" label="Email" />
-      <Input type="password" name="password" label="Password" />
-      <Input type="checkbox" name="rememberMe" label="Remember me" />
-      {/* <input id="remember" name="remember" type="checkbox" />
-      <label htmlFor="remember">Remember me</label> */}
-      <br />
-      <SubmitButton />
-    </ValidatedForm>
+    <div className="flex justify-center items-center h-screen">
+      <ValidatedForm validator={validator} method="post" className="space-y-3">
+        <Input type="email" name="email" label="Email" />
+        <Input type="password" name="password" label="Password" />
+        <Input type="checkbox" name="rememberMe" label="Remember me" />
+        <SubmitButton />
+      </ValidatedForm>
+    </div>
   );
 }

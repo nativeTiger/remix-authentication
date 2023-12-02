@@ -9,7 +9,7 @@ import {
 import { z } from "zod";
 import { Input } from "~/components/input/Input";
 import { SubmitButton } from "~/components/button/SubmitButton";
-import { createUser, verifyLogin } from "~/models/user.server";
+import { createUser } from "~/models/user.server";
 import { getUserId } from "~/session.server";
 
 export const validator = withZod(
@@ -23,11 +23,11 @@ export const validator = withZod(
   })
 );
 
-// export async function loader({ request }: LoaderFunctionArgs) {
-//   const userId = await getUserId(request);
-//   if (userId) return redirect("/");
-//   return json({});
-// }
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getUserId(request);
+  if (userId) return redirect("/");
+  return json({});
+}
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const result = await validator.validate(await request.formData());
@@ -45,14 +45,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function SignUpPage() {
   return (
-    <ValidatedForm validator={validator} method="post">
-      <Input type="text" name="name" label="Name" />
-      <Input type="email" name="email" label="Email" />
-      <Input type="password" name="password" label="Password" />
-      {/* <input id="remember" name="remember" type="checkbox" />
-      <label htmlFor="remember">Remember me</label> */}
-      <br />
-      <SubmitButton />
-    </ValidatedForm>
+    <div className="flex justify-center items-center h-screen">
+      <ValidatedForm validator={validator} method="post" className="space-y-2">
+        <Input type="text" name="name" label="Name" />
+        <Input type="email" name="email" label="Email" />
+        <Input type="password" name="password" label="Password" />
+        <SubmitButton />
+      </ValidatedForm>
+    </div>
   );
 }
