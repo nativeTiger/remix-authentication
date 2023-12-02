@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { getUserById } from "./models/user.server";
 
@@ -17,6 +17,7 @@ const sessionStorage = createCookieSessionStorage({
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
+
   return sessionStorage.getSession(cookie);
 }
 
@@ -30,16 +31,18 @@ export async function logout(request: Request) {
 export async function createUserSession({
   request,
   userId,
+  rememberMe,
 }: {
   request: Request;
   userId: string;
+  rememberMe: "on" | undefined;
 }) {
   const session = await getSession(request);
   session.set(USER_SESSION_KEY, userId);
   return redirect("/", {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: 60 * 60 * 24 * 7, // 7 days,
+        maxAge: rememberMe === "on" ? 60 * 60 * 24 * 7 : 60 * 60 * 24 * 1,
       }),
     },
   });
@@ -63,4 +66,14 @@ export async function getUserDetails(request: Request) {
   if (user) return user;
 
   throw await logout(request);
+}
+
+export async function requireUserId(request: Request) {
+  const userId = await getUserId(request);
+
+  if (!userId) {
+    throw redirect("/login");
+  }
+
+  return userId;
 }

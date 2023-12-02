@@ -9,25 +9,25 @@ import {
 import { z } from "zod";
 import { Input } from "~/components/input/Input";
 import { SubmitButton } from "~/components/button/SubmitButton";
-import { verifyLogin } from "~/models/user.server";
-import { createUserSession, getUserId } from "~/session.server";
+import { createUser, verifyLogin } from "~/models/user.server";
+import { getUserId } from "~/session.server";
 
 export const validator = withZod(
   z.object({
+    name: z.string().min(1, { message: "Name is required" }),
     email: z
       .string()
       .min(1, { message: "Email is required" })
       .email("Must be a valid email"),
     password: z.string().min(1, { message: "Password is required" }),
-    rememberMe: z.literal("on").optional(),
   })
 );
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
-  return json({});
-}
+// export async function loader({ request }: LoaderFunctionArgs) {
+//   const userId = await getUserId(request);
+//   if (userId) return redirect("/");
+//   return json({});
+// }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const result = await validator.validate(await request.formData());
@@ -36,22 +36,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return validationError(result.error);
   }
 
-  const { email, password, rememberMe } = result.data;
+  const { email, password, name } = result.data;
 
-  const user = await verifyLogin({ email, password });
-  if (!user) {
-    return redirect("/login");
-  }
+  await createUser({ email, name, password });
 
-  return createUserSession({ request, userId: user.id, rememberMe });
+  return redirect("/login");
 };
 
-export default function LoginPage() {
+export default function SignUpPage() {
   return (
     <ValidatedForm validator={validator} method="post">
+      <Input type="text" name="name" label="Name" />
       <Input type="email" name="email" label="Email" />
       <Input type="password" name="password" label="Password" />
-      <Input type="checkbox" name="rememberMe" label="Remember me" />
       {/* <input id="remember" name="remember" type="checkbox" />
       <label htmlFor="remember">Remember me</label> */}
       <br />
