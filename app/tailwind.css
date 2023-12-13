@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    --tw-text-opacity: 1;
+    background: rgb(249 249 249 / var(--tw-text-opacity));
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    --tw-text-opacity: 1;
+    background: rgb(219 234 254 / var(--tw-text-opacity));
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed;
+  }
+  .sidebar {
+    @apply fixed transition-all duration-500 h-screen overflow-auto scrollbar bg-white text-gray-700 px-4 pt-2 pb-32 shadow;
+  }
+  .nav__item {
+    @apply flex space-x-4 items-center px-3 py-2 rounded-md hover:bg-blue-500 hover:text-white duration-300;
+  }
+  .nav__item--active {
+    @apply bg-blue-500 text-white;
+  }
+  .nav__disclosure {
+    @apply flex justify-between items-center px-3 py-2 rounded-md hover:bg-blue-500 hover:text-white duration-300 truncate;
+  }
+}

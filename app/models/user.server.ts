@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import prismadb from "~/utils/prismadb";
+import prismadb from "~/lib/prismadb";
 
 export async function getUserById(id: string) {
   return prismadb.user.findUnique({ where: { id } });

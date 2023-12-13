@@ -7,10 +7,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({});
 }
 
-export default function DashboardPage() {
+export default function ProductPage() {
   return (
     <>
-      <h1>Dashboard Page</h1>
+      <h1>Product Page</h1>
       <Form action="/logout" method="post">
         <button type="submit">Logout</button>
       </Form>

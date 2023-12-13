@@ -13,14 +13,15 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { getUserDetails } from "~/session.server";
+// import { SideBar } from "~/components/sidebar/Sidebar";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  // await requireUserId(request);
   const user = await getUserDetails(request);
-
   return json({
     user,
   });
@@ -35,14 +36,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <section className="sm: grid-rows-[60px 1fr] sm:grid-cols-[80px] 1fr">
-          <nav></nav>
-          <header></header>
-          <main>
-            <Outlet />
-          </main>
-        </section>
-
+        <main>
+          <Outlet />
+        </main>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

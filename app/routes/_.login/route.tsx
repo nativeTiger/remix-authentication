@@ -17,7 +17,7 @@ export const validator = withZod(
     email: z
       .string()
       .min(1, { message: "Email is required" })
-      .email("Must be a valid email"),
+      .email({ message: "Must be a valid email" }),
     password: z.string().min(1, { message: "Password is required" }),
     rememberMe: z.literal("on").optional(),
   })
@@ -49,7 +49,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function LoginPage() {
   return (
     <div className="flex justify-center items-center h-screen">
-      <ValidatedForm validator={validator} method="post" className="space-y-3">
+      <ValidatedForm
+        validator={validator}
+        method="post"
+        className="space-y-3"
+        id="login-form"
+      >
         <Input type="email" name="email" label="Email" />
         <Input type="password" name="password" label="Password" />
         <Input type="checkbox" name="rememberMe" label="Remember me" />

@@ -16,7 +16,7 @@ export const Input = ({ name, label, type }: MyInputProps) => {
       <input
         type={type}
         {...getInputProps({ id: name })}
-        className="outline-none w-full mt-1 text-gray-500 border-2 rounded-md px-4 py-1.5 duration-200 focus:border-blue-600"
+        className="outline-none w-full mt-1 text-gray-500 border-2 rounded-md px-4 py-1.5 duration-200 focus:border-gray-600"
       />
       {error && <p className="text-red-500 py-1 text-sm">{error}</p>}
     </div>
