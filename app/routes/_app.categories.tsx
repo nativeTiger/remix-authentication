@@ -3,10 +3,8 @@ import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -24,6 +22,13 @@ import {
 } from "remix-validated-form";
 import { Input } from "~/components/input/Input";
 import prismadb from "~/lib/prismadb";
+import {
+  messageCommitSession,
+  getMessageSession,
+  setSuccessMessage,
+  setErrorMessage,
+} from "~/toast-message.server";
+import { Prisma } from "@prisma/client";
 
 export const validator = withZod(
   z.object({ name: z.string().min(1, { message: "Name is required" }).trim() })
@@ -36,23 +41,42 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const userId = await getUserId(request);
-  if (!userId) return json({ message: "uthenticate" });
+  if (!userId) return json({ message: "unauthenticate" });
 
-  const result = await validator.validate(await request.formData());
+  const session = await getMessageSession(request);
+  try {
+    const result = await validator.validate(await request.formData());
 
-  if (result.error) {
-    return validationError(result.error);
+    if (result.error) {
+      return validationError(result.error);
+    }
+
+    const { name } = result.data;
+
+    const categoryInput = {
+      name,
+      userId,
+    };
+
+    const category = await prismadb.category.create({ data: categoryInput });
+    setSuccessMessage(session, "Category created successfully");
+    return json(
+      { category },
+      { headers: { "Set-Cookie": await messageCommitSession(session) } }
+    );
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        setErrorMessage(session, "Category name already exists");
+      }
+    }
+    return json(
+      { ok: false },
+      {
+        headers: { "Set-Cookie": await messageCommitSession(session) },
+      }
+    );
   }
-
-  const { name } = result.data;
-
-  const categoryInput = {
-    name,
-    userId,
-  };
-
-  const category = await prismadb.category.create({ data: categoryInput });
-  return json({ category });
 };
 
 export default function CategoryPage() {
