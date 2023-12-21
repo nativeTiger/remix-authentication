@@ -1,12 +1,12 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { requireUserId } from "~/session.server";
-import { getALlCategories } from "~/lib/api/category-api";
+import { getAllCategories } from "~/lib/api/category-api";
 import CategorySidebar from "./category-sidebar";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUserId(request);
-  const categories = await getALlCategories(request);
+  const categories = await getAllCategories(request);
   return json({ categories });
 }
 export default function CategoryLayout() {

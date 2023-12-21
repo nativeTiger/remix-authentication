@@ -7,7 +7,7 @@ import { getUserId } from "~/session.server";
  * @param request
  * @returns List of Categories
  */
-export async function getALlCategories(
+export async function getAllCategories(
   request: Request
 ): Promise<Pick<Category, "id" | "name">[]> {
   const userId = await getUserId(request);
