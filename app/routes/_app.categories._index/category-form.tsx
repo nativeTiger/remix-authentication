@@ -46,9 +46,14 @@ export default function CategoryForm({
       <Button variant="default" onClick={() => setIsEditDialogOpen(true)}>
         {label} Category
       </Button>
-      <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-        Delete Category
-      </Button>
+      {initialData && (
+        <Button
+          variant="destructive"
+          onClick={() => setIsDeleteDialogOpen(true)}
+        >
+          Delete Category
+        </Button>
+      )}
 
       {/* Edit Category Dialog */}
       <Dialog
