@@ -1,9 +1,11 @@
 import { useField } from "remix-validated-form";
+import type { CategoryFormFieldNameType } from "~/routes/_app.categories._index/category-form";
+import type { ProductFormFieldNameType } from "~/routes/_app.products/product-form";
 
 type MyInputProps = {
-  name: string;
+  name: CategoryFormFieldNameType | ProductFormFieldNameType;
   label: string;
-  type: "email" | "password" | "checkbox" | "text";
+  type: "email" | "password" | "checkbox" | "text" | "number";
 };
 
 export const Input = ({ name, label, type }: MyInputProps) => {

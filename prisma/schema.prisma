@@ -43,6 +43,8 @@ model Category {
 model Product {
   id String @id @default(uuid())
   name String @unique
+  description String
+  price Decimal
   imageUrl String
   userId String
   user User @relation("UserToProduct",fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)

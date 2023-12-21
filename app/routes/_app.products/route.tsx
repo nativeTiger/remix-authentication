@@ -1,5 +1,6 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
+import ProductForm from "./product-form";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUserId(request);
@@ -7,5 +8,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function ProductPage() {
-  return <h1>Product Page</h1>;
+  return (
+    <>
+      <h1>Product Page</h1>
+      <ProductForm />
+    </>
+  );
 }
