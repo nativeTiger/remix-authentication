@@ -1,5 +1,4 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form } from "@remix-run/react";
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -8,12 +7,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function ProductPage() {
-  return (
-    <>
-      <h1>Product Page</h1>
-      <Form action="/logout" method="post">
-        <button type="submit">Logout</button>
-      </Form>
-    </>
-  );
+  return <h1>Product Page</h1>;
 }
