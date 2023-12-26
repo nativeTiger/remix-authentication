@@ -15,6 +15,8 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
+import { TextAreaInput } from "~/components/input/text-area-input";
+import SelectInput from "~/components/input/select-input";
 
 const MAX_FILE_SIZE_MB = 15;
 const ACCEPTED_IMAGE_TYPES = [
@@ -44,7 +46,10 @@ const ProductFormFieldSchema = z.object({
   ),
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  price: z.number().min(1, { message: "Product price is required" }),
+  price: z.union([
+    z.number(),
+    z.string().min(1, { message: "Product price is required" }),
+  ]),
   category: z.string().min(1, { message: "Category is required" }),
 });
 
@@ -53,6 +58,12 @@ export const ProductFormFieldValidator = withZod(ProductFormFieldSchema);
 export type ProductFormType = z.infer<typeof ProductFormFieldSchema>;
 
 export type ProductFormFieldNameType = keyof ProductFormType;
+
+const options = [
+  { label: "Marketing", value: "marketing" },
+  { label: "Sales", value: "sales" },
+  { label: "Accountant", value: "accountant" },
+];
 
 export default function ProductForm() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -69,28 +80,31 @@ export default function ProductForm() {
             <DialogTitle>Add Product</DialogTitle>
             <DialogDescription>Add new product</DialogDescription>
           </DialogHeader>
-          <div className="flex items-center space-x-2">
-            <ValidatedForm
-              method="post"
-              validator={ProductFormFieldValidator}
-              id="add-product"
-            >
-              <Input type="text" name="name" label="Name" />
-              <Input type="text" name="description" label="Description" />
-              <Input type="number" name="price" label="Price" />
-              <ImageUploadInput name="productImage" />
-              <DialogFooter className="sm:justify-end">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-                <Button type="submit" aria-disabled={isSubmitting}>
-                  Create
+          <ValidatedForm
+            method="post"
+            validator={ProductFormFieldValidator}
+            id="add-product"
+          >
+            <ImageUploadInput name="productImage" />
+            <Input type="text" name="name" label="Name" />
+            <Input type="number" name="price" label="Price" />
+            <SelectInput
+              label="Select Category"
+              name="category"
+              options={options}
+            />
+            <TextAreaInput name="description" label="Description" />
+            <DialogFooter className="sm:justify-end">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Close
                 </Button>
-              </DialogFooter>
-            </ValidatedForm>
-          </div>
+              </DialogClose>
+              <Button type="submit" aria-disabled={isSubmitting}>
+                Create
+              </Button>
+            </DialogFooter>
+          </ValidatedForm>
         </DialogContent>
       </Dialog>
     </>

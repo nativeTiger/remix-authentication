@@ -64,14 +64,13 @@ export default function ImageUploadInput({
             }}
           >
             <Button type="button" className="mr-2">
-              upload new picture
+              upload product image
             </Button>
-            PNG, JPEG under 15MB
           </label>
         </div>
       </div>
       {error && (
-        <p className="pt-1 error-msg">
+        <p className="pt-1 text-red-500">
           <span className="pl-2">{error}</span>
         </p>
       )}
