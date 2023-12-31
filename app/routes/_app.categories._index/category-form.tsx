@@ -72,7 +72,7 @@ export default function CategoryForm({
               method="post"
               className="space-y-3"
               id="add-category"
-              fetcher={fetcher}
+              onSubmit={() => setIsEditDialogOpen(false)}
             >
               <Input type="text" name="name" label="Category Name" />
               <DialogFooter className="sm:justify-end">
@@ -106,7 +106,10 @@ export default function CategoryForm({
           </DialogHeader>
           <DialogDescription>Are you sure want to delete ?</DialogDescription>
           <div className="flex items-center space-x-2 justify-end">
-            <fetcher.Form method="post">
+            <fetcher.Form
+              method="post"
+              onSubmit={() => setIsDeleteDialogOpen(false)}
+            >
               <DialogFooter className="sm:justify-start">
                 <DialogClose asChild>
                   <Button type="button" variant="secondary">

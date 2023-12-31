@@ -17,6 +17,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { TextAreaInput } from "~/components/input/text-area-input";
 import SelectInput from "~/components/input/select-input";
+import { type CategoryOptionType } from "./route";
 
 const MAX_FILE_SIZE_MB = 15;
 const ACCEPTED_IMAGE_TYPES = [
@@ -59,16 +60,13 @@ export type ProductFormType = z.infer<typeof ProductFormFieldSchema>;
 
 export type ProductFormFieldNameType = keyof ProductFormType;
 
-const options = [
-  { label: "Marketing", value: "marketing" },
-  { label: "Sales", value: "sales" },
-  { label: "Accountant", value: "accountant" },
-];
-
-export default function ProductForm() {
+export default function ProductForm({
+  options,
+}: {
+  options: CategoryOptionType[];
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const isSubmitting = useIsSubmitting("add-product");
-
   return (
     <>
       <Button variant="default" onClick={() => setIsOpen(true)}>
@@ -81,9 +79,10 @@ export default function ProductForm() {
             <DialogDescription>Add new product</DialogDescription>
           </DialogHeader>
           <ValidatedForm
+            id="add-product"
             method="post"
             validator={ProductFormFieldValidator}
-            id="add-product"
+            onSubmit={() => setIsOpen(false)}
           >
             <ImageUploadInput name="productImage" />
             <Input type="text" name="name" label="Name" />
