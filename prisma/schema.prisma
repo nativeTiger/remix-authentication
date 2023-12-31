@@ -44,7 +44,7 @@ model Product {
   id String @id @default(uuid())
   name String @unique
   description String
-  price Decimal
+  price Float
   imageUrl String
   userId String
   user User @relation("UserToProduct",fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
