@@ -31,7 +31,8 @@ export default function SelectInput({
           <SelectTrigger
             className={`${
               error ? "border-semantic-danger-500" : "border-grey-300"
-            } rounded-none px-3 py-2 not-italic text-base leading-5.5 font-normal text-grey-400 disabled:bg-grey-25 disabled:border-none`}
+            } outline-none w-full mt-1 text-gray-500 border-2
+            rounded-md px-4 py-1.5 duration-200`}
           >
             <SelectValue placeholder={label} />
           </SelectTrigger>
@@ -39,11 +40,7 @@ export default function SelectInput({
             <ScrollArea className="max-h-[238px] w-full p-2">
               <SelectGroup>
                 {options.map((item, index) => (
-                  <SelectItem
-                    value={item.value}
-                    key={index}
-                    className="p-2 focus:bg-primary-50"
-                  >
+                  <SelectItem value={item.value} key={index} className="p-2">
                     {item.label}
                   </SelectItem>
                 ))}

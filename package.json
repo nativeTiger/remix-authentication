@@ -24,6 +24,7 @@
     "@tanstack/react-table": "^8.10.7",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^1.41.1",
     "clsx": "^2.0.0",
     "isbot": "^3.6.8",
     "lucide-react": "^0.294.0",

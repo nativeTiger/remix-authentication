@@ -81,12 +81,19 @@ export default function ProductForm({
           <ValidatedForm
             id="add-product"
             method="post"
+            encType="multipart/form-data"
             validator={ProductFormFieldValidator}
             onSubmit={() => setIsOpen(false)}
           >
             <ImageUploadInput name="productImage" />
             <Input type="text" name="name" label="Name" />
             <Input type="number" name="price" label="Price" />
+            <label
+              htmlFor="category"
+              className="text-sm font-medium pb-2 text-gray-600"
+            >
+              Select Category
+            </label>
             <SelectInput
               label="Select Category"
               name="category"

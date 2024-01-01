@@ -18,8 +18,12 @@ export async function addProduct({
   productData,
 }: AddProductPayloadType): Promise<boolean> {
   const userId = (await getUserId(request)) as string;
+
   const product = await prismadb.product.create({
-    data: { ...productData, userId },
+    data: {
+      ...productData,
+      userId,
+    },
   });
   return product ? true : false;
 }
