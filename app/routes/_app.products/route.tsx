@@ -39,63 +39,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({ categoryOptions });
 }
 
-// export async function action({ request }: ActionFunctionArgs) {
-//   const userId = await getUserId(request);
-//   if (!userId) return json({ message: "unauthenticate" });
-//   const session = await getMessageSession(request);
-
-//   const uploadHandler: UploadHandler = composeUploadHandlers(
-//     async ({ name, data }) => {
-//       if (name !== "productImage") {
-//         console.log("not working on product image");
-
-//         return undefined;
-//       }
-
-//       const uploadedImage = (await uploadImage(data)) as UploadApiResponse;
-//       return uploadedImage.secure_url;
-//     },
-//     createMemoryUploadHandler()
-//   );
-//   try {
-//     const formData = await parseMultipartFormData(request, uploadHandler);
-
-//     const result = await ProductFormFieldValidator.validate(formData);
-
-//     if (result.error) {
-//       return validationError(result.error);
-//     }
-
-//     const imageUrl = formData.has("productImage")
-//       ? (formData.get("productImage") as string)
-//       : null;
-
-//     console.log("imageurl", imageUrl);
-
-//     const { name, category, description, price } = result.data;
-
-//     const productData: ProductDataType = {
-//       name,
-//       categoryId: category,
-//       description,
-//       price,
-//       imageUrl,
-//     };
-//     const isProductAdded = await addProduct({ request, productData });
-//     isProductAdded
-//       ? setSuccessMessage(session, "Product added succesfully")
-//       : setSuccessMessage(session, "Error on creating product");
-//     return json(
-//       { category },
-//       { headers: { "Set-Cookie": await messageCommitSession(session) } }
-//     );
-//   } catch (error) {
-//     console.log("error", error);
-
-//     return json({});
-//   }
-// }
-
 export async function action({ request }: ActionFunctionArgs) {
   const userId = await getUserId(request);
   if (!userId) return json({ message: "unauthenticate" });

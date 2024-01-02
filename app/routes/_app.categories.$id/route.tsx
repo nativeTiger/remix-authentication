@@ -18,6 +18,8 @@ import {
   setErrorMessage,
   setSuccessMessage,
 } from "~/toast-message.server";
+import { getProductByCategory } from "~/lib/api/product-api";
+import { ProductCard } from "~/components/ui/product-card";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   await requireUserId(request);
@@ -26,7 +28,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   const category = await prismadb.category.findFirst({
     where: { id: categoryId },
   });
-  return json({ category });
+
+  const products = await getProductByCategory({ request, categoryId });
+  return json({ category, products });
 }
 
 export async function action({ params, request }: ActionFunctionArgs) {
@@ -82,6 +86,15 @@ export async function action({ params, request }: ActionFunctionArgs) {
 }
 
 export default function CategoryDetailsPage() {
-  const { category } = useLoaderData<typeof loader>();
-  return <CategoryForm initialData={category} />;
+  const { category, products } = useLoaderData<typeof loader>();
+  return (
+    <div>
+      <CategoryForm initialData={category} />
+      <div className="">
+        {products.map((product, index) => (
+          <ProductCard key={index} {...product} />
+        ))}
+      </div>
+    </div>
+  );
 }

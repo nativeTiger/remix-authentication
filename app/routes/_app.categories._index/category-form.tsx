@@ -43,17 +43,19 @@ export default function CategoryForm({
 
   return (
     <>
-      <Button variant="default" onClick={() => setIsEditDialogOpen(true)}>
-        {label} Category
-      </Button>
-      {initialData && (
-        <Button
-          variant="destructive"
-          onClick={() => setIsDeleteDialogOpen(true)}
-        >
-          Delete Category
+      <div className="flex justify-end items-center">
+        <Button variant="default" onClick={() => setIsEditDialogOpen(true)}>
+          {label} Category
         </Button>
-      )}
+        {initialData && (
+          <Button
+            variant="destructive"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            Delete Category
+          </Button>
+        )}
+      </div>
 
       {/* Edit Category Dialog */}
       <Dialog

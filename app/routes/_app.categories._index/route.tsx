@@ -16,10 +16,14 @@ import {
 import CategoryForm, {
   CategoryFormFieldValidator,
 } from "~/routes/_app.categories._index/category-form";
+import { getAllProduct } from "~/lib/api/product-api";
+import { useLoaderData } from "@remix-run/react";
+import { ProductCard } from "~/components/ui/product-card";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUserId(request);
-  return json({});
+  const allProducts = await getAllProduct(request);
+  return json({ allProducts });
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -68,7 +72,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function CategoryPage() {
-  // const data = useActionData<typeof action>();
-
-  return <CategoryForm />;
+  const { allProducts } = useLoaderData<typeof loader>();
+  return (
+    <div>
+      <CategoryForm />
+      <div className="">
+        {allProducts.map((product, index) => (
+          <ProductCard key={index} {...product} />
+        ))}
+      </div>
+    </div>
+  );
 }

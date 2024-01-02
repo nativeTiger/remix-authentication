@@ -27,3 +27,19 @@ export async function addProduct({
   });
   return product ? true : false;
 }
+
+export async function getAllProduct(request: Request) {
+  const userId = await getUserId(request);
+  return await prismadb.product.findMany({ where: { userId } });
+}
+
+export async function getProductByCategory({
+  request,
+  categoryId,
+}: {
+  request: Request;
+  categoryId: string | undefined;
+}) {
+  const userId = await getUserId(request);
+  return await prismadb.product.findMany({ where: { userId, categoryId } });
+}
