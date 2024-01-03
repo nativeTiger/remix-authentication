@@ -76,7 +76,7 @@ export default function CategoryPage() {
   return (
     <div>
       <CategoryForm />
-      <div className="">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         {allProducts.map((product, index) => (
           <ProductCard key={index} {...product} />
         ))}

@@ -43,7 +43,7 @@ export default function CategoryForm({
 
   return (
     <>
-      <div className="flex justify-end items-center">
+      <div className="flex justify-end items-center gap-x-4">
         <Button variant="default" onClick={() => setIsEditDialogOpen(true)}>
           {label} Category
         </Button>

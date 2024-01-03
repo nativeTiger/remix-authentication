@@ -10,7 +10,7 @@ export default function CategorySidebar({
 }: CategorySidebarProps) {
   const { pathname } = useLocation();
   return (
-    <aside className="p-4 col-span-1 h-full overflow-y-auto scrollbar bg-white">
+    <aside className="p-4 col-start-1 col-end-1 h-full overflow-y-auto scrollbar bg-white">
       <ul className="block space-y-1">
         <NavLink
           to={`/categories`}

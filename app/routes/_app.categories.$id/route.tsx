@@ -88,13 +88,13 @@ export async function action({ params, request }: ActionFunctionArgs) {
 export default function CategoryDetailsPage() {
   const { category, products } = useLoaderData<typeof loader>();
   return (
-    <div>
+    <>
       <CategoryForm initialData={category} />
-      <div className="">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         {products.map((product, index) => (
           <ProductCard key={index} {...product} />
         ))}
       </div>
-    </div>
+    </>
   );
 }
