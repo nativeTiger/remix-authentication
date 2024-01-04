@@ -32,15 +32,8 @@ import { DEFAULT_IMAGE } from "~/lib/constants";
 import { useTable } from "~/hooks/useTable";
 import { useColumns } from "./use-columns";
 import { DataTable } from "~/components/ui/data-table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
+import { useEffect, useState } from "react";
+import { Pagination } from "./pagination";
 
 export type CategoryOptionType = {
   label: string;
@@ -122,14 +115,20 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function ProductPage() {
   const actionData = useActionData<typeof action>();
+  const [currentPage, setCurrentPage] = useState(1);
+
   console.log("action data", actionData);
   const { categoryOptions, productList, count } =
     useLoaderData<typeof loader>();
   const { columns } = useColumns();
   const { table } = useTable(columns, productList);
 
-  // const [searchParams, setSearchParams] = useSearchParams();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(currentPage));
+    setSearchParams(params);
+  }, [currentPage]);
   return (
     <>
       <h1>Product Page</h1>
@@ -138,30 +137,12 @@ export default function ProductPage() {
       <div className="mt-4" aria-live="polite">
         <p>{`Displaying ${productList.length} of ${count}.`}</p>
       </div>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <Pagination
+        currentPage={currentPage}
+        pageSize={2}
+        totalCount={count}
+        onPageChange={(pageNumber: number) => setCurrentPage(pageNumber)}
+      />
     </>
   );
 }
