@@ -1,12 +1,11 @@
+import { type ColumnDef, type Table, flexRender } from "@tanstack/react-table";
 import {
-  type ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ChevronsUpDownIcon,
+} from "lucide-react";
 import {
-  Table,
+  Table as TableShadcn,
   TableBody,
   TableCell,
   TableHead,
@@ -14,42 +13,58 @@ import {
   TableRow,
 } from "~/components/ui/table";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+type DataTableProps<T> = {
+  table: Table<T>;
+  columns?: ColumnDef<T>[];
+};
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
+export function DataTable<T>({ table, columns }: DataTableProps<T>) {
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+    <TableShadcn>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder ? null : (
+                    <div
+                      {...{
+                        className: header.column.getCanSort()
+                          ? "flex items-center gap-x-2 cursor-pointer"
+                          : "",
+                        onClick: header.column.getToggleSortingHandler(),
+                      }}
+                    >
+                      <span className="">
+                        {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
+                      </span>
+                      {header.column.getIsSorted() ? (
+                        {
+                          asc: <ChevronUpIcon />,
+                          desc: <ChevronDownIcon />,
+                        }[(header.column.getIsSorted() as string) ?? null]
+                      ) : (
+                        <>
+                          {header.column.getCanSort() ? (
+                            <ChevronsUpDownIcon />
+                          ) : (
+                            ""
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
+      {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
@@ -58,7 +73,7 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="py-1.5 px-4 ">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -66,13 +81,16 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={columns && columns.length}
+                className="h-24 text-center"
+              >
                 No results.
               </TableCell>
             </TableRow>
           )}
         </TableBody>
-      </Table>
-    </div>
+      }
+    </TableShadcn>
   );
 }

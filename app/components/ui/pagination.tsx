@@ -1,127 +1,117 @@
-import { Link, useLocation, useSearchParams } from "@remix-run/react";
-import clsx from "clsx";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import { generatePagination } from "~/lib/utils";
+import * as React from "react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
-export default function Pagination({ totalPages }: { totalPages: number }) {
-  // NOTE: comment in this code when you get to this point in the course
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get("_page")) || 1;
-  const location = useLocation();
-  const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("_page", pageNumber.toString());
-    setSearchParams(params);
-    return `${location.pathname}?${searchParams.toString()}`;
-  };
-  console.log(createPageURL(1));
+import { cn } from "~/lib/utils";
+import { type ButtonProps, buttonVariants } from "~/components/ui/button";
 
-  const allPages = generatePagination(currentPage, totalPages);
+const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
+  <nav
+    role="navigation"
+    aria-label="pagination"
+    className={cn("mx-auto flex w-full justify-center", className)}
+    {...props}
+  />
+);
 
-  return (
-    <>
-      {/* NOTE: comment in this code when you get to this point in the course */}
+const PaginationContent = React.forwardRef<
+  HTMLUListElement,
+  React.ComponentProps<"ul">
+>(({ className, ...props }, ref) => (
+  <ul
+    ref={ref}
+    className={cn("flex flex-row items-center gap-1", className)}
+    {...props}
+  />
+));
+PaginationContent.displayName = "PaginationContent";
 
-      <div className="inline-flex">
-        <PaginationArrow
-          direction="left"
-          href={createPageURL(currentPage - 1)}
-          isDisabled={currentPage <= 1}
-        />
+const PaginationItem = React.forwardRef<
+  HTMLLIElement,
+  React.ComponentProps<"li">
+>(({ className, ...props }, ref) => (
+  <li ref={ref} className={cn("", className)} {...props} />
+));
+PaginationItem.displayName = "PaginationItem";
 
-        <div className="flex -space-x-px">
-          {allPages.map((page, index) => {
-            let position: "first" | "last" | "single" | "middle" | undefined;
+type PaginationLinkProps = {
+  isActive?: boolean;
+} & Pick<ButtonProps, "size"> &
+  React.ComponentProps<"a">;
 
-            if (index === 0) position = "first";
-            if (index === allPages.length - 1) position = "last";
-            if (allPages.length === 1) position = "single";
-            if (page === "...") position = "middle";
-
-            return (
-              <PaginationNumber
-                key={page}
-                href={createPageURL(page)}
-                page={page}
-                position={position}
-                isActive={currentPage === page}
-              />
-            );
-          })}
-        </div>
-
-        <PaginationArrow
-          direction="right"
-          href={createPageURL(currentPage + 1)}
-          isDisabled={currentPage >= totalPages}
-        />
-      </div>
-    </>
-  );
-}
-
-function PaginationNumber({
-  page,
-  href,
+const PaginationLink = ({
+  className,
   isActive,
-  position,
-}: {
-  page: number | string;
-  href: string;
-  position?: "first" | "last" | "middle" | "single";
-  isActive: boolean;
-}) {
-  const className = clsx(
-    "flex h-10 w-10 items-center justify-center text-sm border",
-    {
-      "rounded-l-md": position === "first" || position === "single",
-      "rounded-r-md": position === "last" || position === "single",
-      "z-10 bg-blue-600 border-blue-600 text-white": isActive,
-      "hover:bg-gray-100": !isActive && position !== "middle",
-      "text-gray-300": position === "middle",
-    }
-  );
+  size = "icon",
+  ...props
+}: PaginationLinkProps) => (
+  <PaginationItem>
+    {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+    <a
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        buttonVariants({
+          variant: isActive ? "outline" : "ghost",
+          size,
+        }),
+        className
+      )}
+      {...props}
+    />
+  </PaginationItem>
+);
+PaginationLink.displayName = "PaginationLink";
 
-  return isActive || position === "middle" ? (
-    <div className={className}>{page}</div>
-  ) : (
-    <Link to={href} className={className}>
-      {page}
-    </Link>
-  );
-}
+const PaginationPrevious = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to previous page"
+    size="default"
+    className={cn("gap-1 pl-2.5", className)}
+    {...props}
+  >
+    <ChevronLeft className="h-4 w-4" />
+    <span>Previous</span>
+  </PaginationLink>
+);
+PaginationPrevious.displayName = "PaginationPrevious";
 
-function PaginationArrow({
-  href,
-  direction,
-  isDisabled,
-}: {
-  href: string;
-  direction: "left" | "right";
-  isDisabled?: boolean;
-}) {
-  const className = clsx(
-    "flex h-10 w-10 items-center justify-center rounded-md border",
-    {
-      "pointer-events-none text-gray-300": isDisabled,
-      "hover:bg-gray-100": !isDisabled,
-      "mr-2 md:mr-4": direction === "left",
-      "ml-2 md:ml-4": direction === "right",
-    }
-  );
+const PaginationNext = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to next page"
+    size="default"
+    className={cn("gap-1 pr-2.5", className)}
+    {...props}
+  >
+    <span>Next</span>
+    <ChevronRight className="h-4 w-4" />
+  </PaginationLink>
+);
 
-  const icon =
-    direction === "left" ? (
-      <ArrowLeftIcon className="w-4" />
-    ) : (
-      <ArrowRightIcon className="w-4" />
-    );
+const PaginationEllipsis = ({
+  className,
+  ...props
+}: React.ComponentProps<"span">) => (
+  <span
+    aria-hidden
+    className={cn("flex h-9 w-9 items-center justify-center", className)}
+    {...props}
+  >
+    <MoreHorizontal className="h-4 w-4" />
+    <span className="sr-only">More pages</span>
+  </span>
+);
 
-  return isDisabled ? (
-    <div className={className}>{icon}</div>
-  ) : (
-    <Link className={className} to={href}>
-      {icon}
-    </Link>
-  );
-}
+export {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+};
