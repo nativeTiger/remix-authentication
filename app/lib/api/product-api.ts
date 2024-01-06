@@ -42,6 +42,9 @@ export async function getAllProduct(request: Request) {
     take: PER_PAGE,
     skip: (currentPage - 1) * PER_PAGE,
     where: { userId },
+    orderBy: {
+      updatedAt: "desc",
+    },
   };
   const countOptions: Prisma.ProductCountArgs = {};
 
@@ -53,6 +56,14 @@ export async function getAllProduct(request: Request) {
     };
     countOptions.where = options.where;
   }
+
+  if (query.get("sort")) {
+    const sort = query.get("sort") as string;
+    options.orderBy = {
+      [sort]: query.get("order") || "asc",
+    };
+  }
+
   const productListPromise = prismadb.product.findMany(options);
   const countPromise = prismadb.product.count(countOptions);
 

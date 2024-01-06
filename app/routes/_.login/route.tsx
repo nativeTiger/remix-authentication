@@ -12,16 +12,20 @@ import { SubmitButton } from "~/components/button/SubmitButton";
 import { verifyLogin } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 
-export const validator = withZod(
-  z.object({
-    email: z
-      .string()
-      .min(1, { message: "Email is required" })
-      .email({ message: "Must be a valid email" }),
-    password: z.string().min(1, { message: "Password is required" }),
-    rememberMe: z.literal("on").optional(),
-  })
-);
+const LoginFormFieldSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Must be a valid email" }),
+  password: z.string().min(1, { message: "Password is required" }),
+  rememberMe: z.literal("on").optional(),
+});
+
+export const LoginFormFieldValidator = withZod(LoginFormFieldSchema);
+
+export type LoginFormType = z.infer<typeof LoginFormFieldSchema>;
+
+export type LoginFormFieldNameType = keyof LoginFormType;
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -30,7 +34,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const result = await validator.validate(await request.formData());
+  const result = await LoginFormFieldValidator.validate(
+    await request.formData()
+  );
 
   if (result.error) {
     return validationError(result.error);
@@ -50,7 +56,7 @@ export default function LoginPage() {
   return (
     <div className="flex justify-center items-center h-screen">
       <ValidatedForm
-        validator={validator}
+        validator={LoginFormFieldValidator}
         method="post"
         className="space-y-3"
         id="login-form"

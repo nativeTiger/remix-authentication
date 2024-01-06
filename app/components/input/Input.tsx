@@ -1,9 +1,15 @@
 import { useField } from "remix-validated-form";
+import type { LoginFormFieldNameType } from "~/routes/_.login/route";
+import type { SignUpFormFieldNameType } from "~/routes/_.signup/route";
 import type { CategoryFormFieldNameType } from "~/routes/_app.categories._index/category-form";
 import type { ProductFormFieldNameType } from "~/routes/_app.products/product-form";
 
 type MyInputProps = {
-  name: CategoryFormFieldNameType | ProductFormFieldNameType;
+  name:
+    | CategoryFormFieldNameType
+    | ProductFormFieldNameType
+    | LoginFormFieldNameType
+    | SignUpFormFieldNameType;
   label: string;
   type: "email" | "password" | "checkbox" | "text" | "number" | "textarea";
 };

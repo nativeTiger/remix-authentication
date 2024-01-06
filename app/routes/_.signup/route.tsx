@@ -12,7 +12,16 @@ import { SubmitButton } from "~/components/button/SubmitButton";
 import { createUser } from "~/models/user.server";
 import { getUserId } from "~/session.server";
 
-export const validator = withZod(
+const SignUpFormFieldSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email("Must be a valid email"),
+  password: z.string().min(1, { message: "Password is required" }),
+});
+
+export const SignUpFormFieldValidator = withZod(
   z.object({
     name: z.string().min(1, { message: "Name is required" }),
     email: z
@@ -23,6 +32,10 @@ export const validator = withZod(
   })
 );
 
+export type SignUpFormType = z.infer<typeof SignUpFormFieldSchema>;
+
+export type SignUpFormFieldNameType = keyof SignUpFormType;
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
   if (userId) return redirect("/");
@@ -30,7 +43,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const result = await validator.validate(await request.formData());
+  const result = await SignUpFormFieldValidator.validate(
+    await request.formData()
+  );
 
   if (result.error) {
     return validationError(result.error);
@@ -46,7 +61,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function SignUpPage() {
   return (
     <div className="flex justify-center items-center h-screen">
-      <ValidatedForm validator={validator} method="post" className="space-y-2">
+      <ValidatedForm
+        validator={SignUpFormFieldValidator}
+        method="post"
+        className="space-y-2"
+      >
         <Input type="text" name="name" label="Name" />
         <Input type="email" name="email" label="Email" />
         <Input type="password" name="password" label="Password" />

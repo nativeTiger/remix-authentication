@@ -37,3 +37,27 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+/**
+ * @param {Function} func
+ * @param {number} delay
+ * @param {{ leading?: boolean }} options
+ */
+export function debounce(
+  func: Function,
+  delay: number,
+  { leading }: { leading?: boolean } = {}
+) {
+  let timerId: NodeJS.Timeout | null;
+
+  return (...args: any[]) => {
+    if (!timerId && leading) {
+      func(...args);
+    }
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+
+    timerId = setTimeout(() => func(...args), delay);
+  };
+}
