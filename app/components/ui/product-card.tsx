@@ -3,8 +3,8 @@ import { Link } from "@remix-run/react";
 
 type ProductCardProps = Pick<
   Product,
-  "imageUrl" | "id" | "name" | "description"
-> & { price: string };
+  "imageUrl" | "id" | "name" | "description" | "price"
+>;
 export function ProductCard({
   id,
   name,

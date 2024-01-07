@@ -11,7 +11,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 export default function CategoryLayout() {
   const { categories } = useLoaderData<typeof loader>();
-  console.log("[CATEGORIES]", categories);
   return (
     <section className="grid grid-cols-4 gap-4 max-h-screen grid-rows-[70vh]">
       <CategorySidebar categoryList={categories} />

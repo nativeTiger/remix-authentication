@@ -22,8 +22,8 @@ import { ProductCard } from "~/components/ui/product-card";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUserId(request);
-  const allProducts = await getAllProduct(request);
-  return json({ allProducts });
+  const { productList } = await getAllProduct(request);
+  return json({ productList });
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -72,12 +72,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function CategoryPage() {
-  const { allProducts } = useLoaderData<typeof loader>();
+  const { productList } = useLoaderData<typeof loader>();
   return (
     <div>
       <CategoryForm />
       <div className="grid grid-cols-3 gap-4 mt-4">
-        {allProducts.map((product, index) => (
+        {productList.map((product, index) => (
           <ProductCard key={index} {...product} />
         ))}
       </div>
