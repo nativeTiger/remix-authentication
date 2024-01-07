@@ -2,6 +2,8 @@ import { type Prisma } from "@prisma/client";
 import { getUserId } from "~/session.server";
 import prismadb from "~/lib/prismadb";
 
+export const PER_PAGE = 5;
+
 export type ProductDataType = {
   name: string;
   description: string;
@@ -30,8 +32,6 @@ export async function addProduct({
 }
 
 export async function getAllProduct(request: Request) {
-  const PER_PAGE = 2;
-
   const url = new URL(request.url);
   const query = url.searchParams;
   const currentPage = Math.max(Number(query.get("page")) || 1, 1);

@@ -3,7 +3,6 @@ import { DOTS, usePagination } from "~/hooks/use-pagination";
 import {
   PaginationContent,
   Pagination,
-  PaginationItem,
   PaginationPrevious,
   PaginationEllipsis,
   PaginationLink,
@@ -52,46 +51,36 @@ export function PaginationWrapper({
   const isNextButtonDisabled = currentPage >= Number(lastPage);
 
   return (
-    <Pagination>
+    <Pagination className="justify-end">
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            to={`?${previousQuery.toString()}`}
-            aria-disabled={isPreviousButtonDisabled}
-            className={isPreviousButtonDisabled ? "pointer-events-none" : ""}
-            tabIndex={isPreviousButtonDisabled ? -1 : undefined}
-          />
-        </PaginationItem>
+        <PaginationPrevious
+          to={`?${previousQuery.toString()}`}
+          aria-disabled={isPreviousButtonDisabled}
+          className={isPreviousButtonDisabled ? "pointer-events-none" : ""}
+          tabIndex={isPreviousButtonDisabled ? -1 : undefined}
+        />
         {paginationRange &&
           paginationRange.map((pageNumber, index) => {
             if (pageNumber === DOTS) {
-              return (
-                <PaginationItem key={index}>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              );
+              return <PaginationEllipsis key={index} />;
             }
             pageChange.set(pageParam, String(pageNumber));
             return (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  key={index}
-                  to={`?${pageChange.toString()}`}
-                  isActive={currentPage === pageNumber}
-                >
-                  {pageNumber}
-                </PaginationLink>
-              </PaginationItem>
+              <PaginationLink
+                key={index}
+                to={`?${pageChange.toString()}`}
+                isActive={currentPage === pageNumber}
+              >
+                {pageNumber}
+              </PaginationLink>
             );
           })}
-        <PaginationItem>
-          <PaginationNext
-            to={`?${nextQuery.toString()}`}
-            aria-disabled={isNextButtonDisabled}
-            className={isNextButtonDisabled ? "pointer-events-none" : ""}
-            tabIndex={isNextButtonDisabled ? -1 : undefined}
-          />
-        </PaginationItem>
+        <PaginationNext
+          to={`?${nextQuery.toString()}`}
+          aria-disabled={isNextButtonDisabled}
+          className={isNextButtonDisabled ? "pointer-events-none" : ""}
+          tabIndex={isNextButtonDisabled ? -1 : undefined}
+        />
       </PaginationContent>
     </Pagination>
   );

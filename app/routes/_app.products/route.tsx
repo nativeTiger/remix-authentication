@@ -31,6 +31,7 @@ import {
   type ProductDataType,
   addProduct,
   getAllProduct,
+  PER_PAGE,
 } from "~/lib/api/product-api";
 import {
   getMessageSession,
@@ -169,7 +170,7 @@ export default function ProductPage() {
         <div className="mt-4" aria-live="polite">
           <p>{`Displaying ${productList.length} of ${count}.`}</p>
         </div>
-        <PaginationWrapper pageSize={2} totalCount={count} />
+        <PaginationWrapper pageSize={PER_PAGE} totalCount={count} />
       </div>
     </>
   );
