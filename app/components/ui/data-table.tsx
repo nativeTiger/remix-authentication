@@ -1,3 +1,4 @@
+import { useNavigation } from "@remix-run/react";
 import { type ColumnDef, type Table, flexRender } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
@@ -12,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { TableRowSkeleton } from "./skeleton";
 
 type DataTableProps<T> = {
   table: Table<T>;
@@ -19,6 +21,7 @@ type DataTableProps<T> = {
 };
 
 export function DataTable<T>({ table, columns }: DataTableProps<T>) {
+  const navigation = useNavigation();
   return (
     <TableShadcn>
       <TableHeader>
@@ -64,7 +67,15 @@ export function DataTable<T>({ table, columns }: DataTableProps<T>) {
           </TableRow>
         ))}
       </TableHeader>
-      {
+      {navigation.state === "loading" ? (
+        <>
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+        </>
+      ) : (
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
@@ -90,7 +101,7 @@ export function DataTable<T>({ table, columns }: DataTableProps<T>) {
             </TableRow>
           )}
         </TableBody>
-      }
+      )}
     </TableShadcn>
   );
 }
