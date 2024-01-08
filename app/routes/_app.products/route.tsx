@@ -39,6 +39,7 @@ import {
   setSuccessMessage,
 } from "~/toast-message.server";
 import { PaginationWrapper } from "~/components/ui/pagination-wrapper";
+import { SearchIcon } from "lucide-react";
 
 export type CategoryOptionType = {
   label: string;
@@ -155,13 +156,18 @@ export default function ProductPage() {
     <>
       <div className="flex items-center justify-between mb-2">
         <Form method="get" onChange={handleSubmit}>
-          <input
-            type="search"
-            name="search"
-            placeholder="Search"
-            className="outline-none w-full mt-1 text-gray-500 border-2 rounded-md px-4 py-1.5 duration-200 focus:border-gray-600"
-            defaultValue={searchParams.get("search") || ""}
-          />
+          <div className="relative">
+            <input
+              type="search"
+              name="search"
+              placeholder="Search"
+              className="outline-none w-full mt-1 text-gray-500 border-2 rounded-md pr-4 pl-10 py-1.5 duration-200 focus:border-gray-600"
+              defaultValue={searchParams.get("search") || ""}
+            />
+            <span className="absolute top-3 left-3">
+              <SearchIcon className="text-gray-400" />
+            </span>
+          </div>
         </Form>
         <ProductForm options={categoryOptions} />
       </div>

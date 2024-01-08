@@ -1,4 +1,4 @@
-import { useNavigation } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import { type ColumnDef, type Table, flexRender } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
@@ -21,7 +21,7 @@ type DataTableProps<T> = {
 };
 
 export function DataTable<T>({ table, columns }: DataTableProps<T>) {
-  const navigation = useNavigation();
+  const fetcher = useFetcher();
   return (
     <TableShadcn>
       <TableHeader>
@@ -67,7 +67,7 @@ export function DataTable<T>({ table, columns }: DataTableProps<T>) {
           </TableRow>
         ))}
       </TableHeader>
-      {navigation.state === "loading" ? (
+      {fetcher.state === "loading" ? (
         <>
           <TableRowSkeleton />
           <TableRowSkeleton />
