@@ -54,6 +54,7 @@ export function PaginationWrapper({
     <Pagination className="justify-end">
       <PaginationContent>
         <PaginationPrevious
+          prefetch="intent"
           to={`?${previousQuery.toString()}`}
           aria-disabled={isPreviousButtonDisabled}
           className={isPreviousButtonDisabled ? "pointer-events-none" : ""}
@@ -70,12 +71,14 @@ export function PaginationWrapper({
                 key={index}
                 to={`?${pageChange.toString()}`}
                 isActive={currentPage === pageNumber}
+                prefetch="intent"
               >
                 {pageNumber}
               </PaginationLink>
             );
           })}
         <PaginationNext
+          prefetch="intent"
           to={`?${nextQuery.toString()}`}
           aria-disabled={isNextButtonDisabled}
           className={isNextButtonDisabled ? "pointer-events-none" : ""}

@@ -1,9 +1,8 @@
-import { useEffect, type FormEvent } from "react";
+import { type FormEvent, Suspense } from "react";
 import { debounce } from "~/lib/utils";
 import { uploadImage } from "~/lib/cloudinary.server";
 import { type UploadApiResponse } from "cloudinary";
 import { DEFAULT_IMAGE } from "~/lib/constants";
-import { useTable } from "~/hooks/useTable";
 import { useColumns } from "~/routes/_app.products/use-columns";
 import { DataTable } from "~/components/ui/data-table";
 import { getUserId, requireUserId } from "~/session.server";
@@ -20,8 +19,10 @@ import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
+  defer,
 } from "@remix-run/node";
 import {
+  Await,
   Form,
   useLoaderData,
   useSearchParams,
@@ -40,6 +41,7 @@ import {
 } from "~/toast-message.server";
 import { PaginationWrapper } from "~/components/ui/pagination-wrapper";
 import { SearchIcon } from "lucide-react";
+import { ProductTableSkeleton } from "~/components/ui/skeleton";
 
 export type CategoryOptionType = {
   label: string;
@@ -49,6 +51,8 @@ export type CategoryOptionType = {
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUserId(request);
 
+  const products = getAllProduct(request);
+
   const categories = await getAllCategories(request);
 
   const categoryOptions: CategoryOptionType[] = categories.map((category) => ({
@@ -56,8 +60,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     value: category.id,
   }));
 
-  const { productList, count } = await getAllProduct(request);
-  return json({ categoryOptions, productList, count });
+  return defer({ products, categoryOptions });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -124,29 +127,11 @@ export default function ProductPage() {
   // console.log("action data", actionData);
   const submit = useSubmit();
 
-  const { categoryOptions, productList, count } =
-    useLoaderData<typeof loader>();
+  const { categoryOptions, products } = useLoaderData<typeof loader>();
 
   const { columns } = useColumns();
 
-  const { table, sorting } = useTable(columns, productList);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const params = new URLSearchParams(searchParams);
-
-  useEffect(() => {
-    if (sorting.length > 0) {
-      params.set("page", "1");
-      params.set("sort", sorting[0].id);
-      params.set("order", sorting[0].desc ? "desc" : "asc");
-    } else {
-      params.delete("sort");
-      params.delete("order");
-    }
-    setSearchParams(params);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting]);
+  const [searchParams] = useSearchParams();
 
   const debounceSubmit = debounce((form: any) => submit(form), 300);
   const handleSubmit = (event: FormEvent<HTMLFormElement>) =>
@@ -171,13 +156,29 @@ export default function ProductPage() {
         </Form>
         <ProductForm options={categoryOptions} />
       </div>
-      <DataTable table={table} />
-      <div className="flex justify-between items-center py-6">
+      <Suspense fallback={<ProductTableSkeleton />}>
+        <Await
+          resolve={products}
+          errorElement={
+            <p className="text-center text-red-400">
+              Error loading Product List
+            </p>
+          }
+        >
+          {({ productList, count }) => (
+            <>
+              <DataTable columns={columns} data={productList} />
+              <PaginationWrapper pageSize={PER_PAGE} totalCount={count} />
+            </>
+          )}
+        </Await>
+      </Suspense>
+      {/* <div className="flex justify-between items-center py-6">
         <div className="mt-4" aria-live="polite">
           <p>{`Displaying ${productList.length} of ${count}.`}</p>
         </div>
-        <PaginationWrapper pageSize={PER_PAGE} totalCount={count} />
-      </div>
+      </div> */}
+      {/* <PaginationWrapper pageSize={PER_PAGE} totalCount={17} /> */}
     </>
   );
 }

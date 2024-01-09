@@ -39,7 +39,8 @@ export function useColumns() {
       {
         accessorKey: "categoryId",
         header: "Category",
-        cell: (info) => info.getValue(),
+        //@ts-ignore
+        cell: (info) => info.row.original.category.name,
         enableSorting: false,
       },
       {
@@ -47,8 +48,6 @@ export function useColumns() {
         header: "Actions",
         enableSorting: false,
         cell: (info) => {
-          // const product = info.row.original;
-          // console.log("product", product);
           return (
             <div className="space-x-2">
               <Button

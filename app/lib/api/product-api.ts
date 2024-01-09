@@ -32,6 +32,7 @@ export async function addProduct({
 }
 
 export async function getAllProduct(request: Request) {
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
   const url = new URL(request.url);
   const query = url.searchParams;
   const currentPage = Math.max(Number(query.get("page")) || 1, 1);
@@ -42,6 +43,7 @@ export async function getAllProduct(request: Request) {
     take: PER_PAGE,
     skip: (currentPage - 1) * PER_PAGE,
     where: { userId },
+    include: { category: true },
     orderBy: {
       updatedAt: "desc",
     },
